@@ -3,6 +3,7 @@
 class Workout {
   date = new Date();
   id = (Date.now() + "").slice(-10);
+  clicks = 0;
 
   constructor(coords, distance, duration) {
     this.coords = coords; // lat,lng
@@ -29,6 +30,10 @@ class Workout {
     this.description = `${this.constructor.name} on ${
       months[this.date.getMonth()]
     } ${this.date.getDate()}`;
+  }
+
+  click() {
+    this.clicks++;
   }
 }
 
@@ -195,8 +200,10 @@ class App {
     // Hide form + clear input fields
     this._hideForm();
 
-    // Display the marker
+    // Set local storage for all workouts
+    this._setLocalStorage();
   }
+
   _renderWorkoutMarker(workout) {
     L.marker(workout.coords)
       .addTo(this.#map)
@@ -278,6 +285,13 @@ class App {
         duration: 1,
       },
     });
+
+    // using the public interface
+    workout.click();
+  }
+
+  _setLocalStorage() {
+    localStorage.setItem("workouts", JSON.stringify(this.#workouts));
   }
 }
 
